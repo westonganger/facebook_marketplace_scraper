@@ -1,0 +1,55 @@
+- @title = "Facebook Marketplace Scraper"
+
+doctype html
+html
+  head
+    title = @title
+
+    = csrf_meta_tags
+    meta name="viewport" content="width=device-width, initial-scale=1"
+
+    = favicon_link_tag "fb_scraper/favicon.ico"
+
+    = render "layouts/fb_scraper/assets"
+
+  body
+    #loader style="display:none;"
+      .vcenter
+        .the-spinner
+          svg.circular viewBox="25 25 50 50"
+            circle.path cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"
+
+    nav.navbar.navbar-inverse
+      .container-fluid
+        .navbar-header
+          button.navbar-toggle.collapsed data-target="#collapse" data-toggle="collapse" type="button"
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand href="/" = @title
+
+        #collapse.collapse.navbar-collapse
+          ul.nav.navbar-nav
+            li
+              a href="/"
+                i.icon-table.space-right
+                | List
+            li
+              a href="/?saved=true"
+                i.icon-star.space-right
+                | Saved
+            li
+              = link_to searches_path do
+                i.icon-search.space-right
+                | Manage Your Searches
+
+    .container-fluid#content
+      - flash.each do |name, msg|
+        - if msg.is_a?(String)
+          .alert.alert-dismissible class="alert-#{name.to_s == "notice" ? "success" : "danger"}"
+            button.close type="button" data-dismiss="alert" aria-hidden="true" ×
+            span id="flash_#{name}" = msg
+
+
+      = yield

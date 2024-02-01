@@ -1,0 +1,50 @@
+- if params[:saved].blank?
+  = link_to "Delete All Unsaved Posts", delete_all_unsaved_posts_path(params.to_unsafe_h), data: {confirm: "Are you sure you want to delete all unsaved posts?"}, method: :delete, class: "btn btn-xs btn-danger pull-right"
+
+h2.inline.space-right2 = @title
+i.fa.fa-info-circle.space-right2 data-toggle="popover" data-content="Any posts older than 60 days are automatically removed."
+
+= form_tag nil, method: :get, class: "space-below2 well-sm well form-inline", style: "max-width: 550px" do
+  .row
+    .col-sm-12
+      = hidden_field_tag :saved, params[:saved]
+
+      = select_tag :search_item_id, options_for_select(FBScraper::SearchItem.all.pluck(:search_text, :id), params[:search_item_id]), class: "form-control", include_blank: "All Searches", style: "max-width:300px; height: 32px;"
+
+      = text_field_tag :search, params[:search], class: "form-control space-left2", placeholder: "Search", style: "max-width:300px; height: 32px;"
+
+      button.btn.btn-primary.btn-sm.space-left2 Search
+
+  .row.space-above2
+    .col-sm-12
+      label.control-label Min Price
+      = text_field_tag :min_price, params[:min_price], class: "form-control", style: "max-width:90px; height: 32px;"
+
+      label.control-label.space-left5 Max Price
+      = text_field_tag :max_price, params[:max_price], class: "form-control", style: "max-width:90px; height: 32px;"
+
+
+table#list.table.table-condensed.table-hover.table-striped
+  thead
+    tr
+      th Title
+      th Price
+      th Location
+      th Scraped At
+      th style="width: 285px;"
+  tbody
+    - @posts.each do |x|
+      tr class="#{"success" if x.saved} #{"warning" if !x.read}"
+        td = x.title
+        td = "$#{x.price}"
+        td = x.location
+        td = x.created_at
+        td.text-right
+          - if !x.read
+            - mark_read_url = post_path(x, format: :json, post: {read: true})
+          = link_to "View", x.url, class: "btn btn-xs btn-default", target: :_blank, data: {url: mark_read_url}
+
+          - mark_saved_url = post_path(x, post: {saved: !x.saved, read: true})
+          = link_to (x.saved ? "Remove Saved" : "Save"), mark_saved_url, method: :patch, class: "btn btn-xs btn-warning"
+
+          = link_to "Delete", post_path(x), method: :delete, class: "btn btn-xs-btn-danger"

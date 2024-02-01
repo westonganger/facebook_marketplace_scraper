@@ -1,0 +1,14 @@
+.bundle/
+log/*.log
+pkg/
+spec/dummy/db/*.sqlite*
+spec/dummy/log/*.log
+spec/dummy/storage/
+spec/dummy/tmp/
+spec/dummy/db/schema.rb
+Gemfile.lock
+**/.DS_Store
+.DS_Store
+spec/examples.txt
+node_modules/
+package-lock.json

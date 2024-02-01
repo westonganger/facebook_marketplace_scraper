@@ -1,0 +1,36 @@
+- url = @search.new_record? ? searches_path : search_path(@search)
+= form_for @search, url: url do |f|
+  - f.object.errors.full_messages.each do |error|
+    div style="color: red;"
+      = error
+
+  .form-group
+    label Search Text
+    div
+      = f.text_field :search_text, class: "form-control"
+
+  .form-group
+    label Min Price
+    div
+      = f.text_field :min_price, class: "form-control", style: "max-width: 150px"
+
+  .form-group
+    label Max Price
+    div
+      = f.text_field :max_price, class: "form-control", style: "max-width: 150px"
+
+  .form-group
+    label Excluded Keywords
+    small.text-muted Comma separated
+    div
+      = f.text_field :hidden_keywords, value: f.object[:hidden_keywords], class: "form-control", style: "max-width: 600px"
+
+  .form-actions style="margin-top: 30px;"
+    = link_to "Cancel", searches_path, class: "btn btn-default"
+    button.btn.btn-primary.space-left3 type="submit" Save
+
+
+css:
+  .form-control{
+    max-width: 350px;
+  }

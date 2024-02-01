@@ -1,0 +1,39 @@
+/*
+ *= require ./loader
+ *= require ./utility
+ *= require_self
+*/
+
+:root{
+  --body-bg-color: white;
+}
+
+h1, h2, h3, h4, h5{
+  margin-top: 0px;
+}
+
+body{
+  background-color: var(--body-bg-color);
+}
+
+.form-group{
+  margin-top: 10px;
+}
+
+label{
+  margin-right: 10px;
+}
+
+.btn-default{
+  border-color: gray;
+  background-color: gray;
+  background-image: none;
+}
+
+a, button{
+  cursor: pointer; /* fix iOS not registering click events, https://stackoverflow.com/a/16006333/3068360 */
+}
+
+.form-control{
+  padding: 5px 10px;
+}
