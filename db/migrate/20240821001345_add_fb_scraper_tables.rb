@@ -1,6 +1,6 @@
 class AddFBScraperTables < ActiveRecord::Migration[6.0]
   def change
-    create_table "fb_scraper_posts", force: :cascade do |t|
+    create_table "fb_scraper_posts" do |t|
       t.string "title", null: false
       t.string "location"
       t.integer "price"
@@ -12,7 +12,7 @@ class AddFBScraperTables < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    create_table "fb_scraper_search_items", force: :cascade do |t|
+    create_table "fb_scraper_search_items" do |t|
       t.string "search_text", null: false
       t.integer "min_price"
       t.integer "max_price"

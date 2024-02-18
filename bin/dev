@@ -1,3 +1,0 @@
-#!/usr/bin/env ruby
-
-`cd spec/dummy/ && bundle exec rails s`

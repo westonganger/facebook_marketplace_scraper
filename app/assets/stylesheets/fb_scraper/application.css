@@ -37,3 +37,7 @@ a, button{
 .form-control{
   padding: 5px 10px;
 }
+
+.alert-default{
+  background-color: #EEE;
+}

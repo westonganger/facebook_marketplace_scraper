@@ -6,13 +6,27 @@ module FBScraper
     end
 
     def scrape
-      @search_items = FBScraper::SearchItem.where(id: params.require(:search_item_ids))
+      if session[:fb_scraper_facebook_username].blank? || session[:fb_scraper_facebook_password].blank?
+        redirect_to(configuration_path, alert: "Scrape was not initiated. Please enter your Facebook username and password to be able to scrape.")
+        return
+      end
+
+      @search_items = FBScraper::SearchItem.all
+
+      if params[:search_item_ids].present?
+        @search_items = @search_items.where(id: params.require(:search_item_ids))
+      end
 
       if @search_items.size == 0
         raise "error no search items found"
       end
 
-      FBScraper::SearchItem.scrape_multiple!(@search_items)
+      FBScraper::SearchItem.scrape_multiple!(
+        @search_items,
+        session[:fb_scraper_browser].downcase,
+        session[:fb_scraper_facebook_username],
+        session[:fb_scraper_facebook_password],
+      )
 
       redirect_back(fallback_location: posts_path, notice: "Scrape successful")
     end

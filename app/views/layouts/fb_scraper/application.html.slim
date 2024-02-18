@@ -44,12 +44,17 @@ html
                 i.icon-search.space-right
                 | Manage Your Searches
 
+          ul.nav.navbar-nav.navbar-right
+            li
+              = link_to configuration_path do
+                i.icon-cog.space-right
+                | Configuration
+
     .container-fluid#content
       - flash.each do |name, msg|
         - if msg.is_a?(String)
-          .alert.alert-dismissible class="alert-#{name.to_s == "notice" ? "success" : "danger"}"
+          .alert.alert-dismissible.flash-message class="alert-#{name.to_s == "notice" ? "default" : "danger"}"
             button.close type="button" data-dismiss="alert" aria-hidden="true" ×
             span id="flash_#{name}" = msg
-
 
       = yield

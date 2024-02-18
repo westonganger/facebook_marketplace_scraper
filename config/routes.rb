@@ -1,5 +1,5 @@
 FBScraper::Engine.routes.draw do
-  resources :posts, path: '/', only: [:index, :update, :destroy] do
+  resources :posts, path: '/listings', only: [:index, :update, :destroy] do
     collection do
       post :scrape
       delete :delete_all_unsaved
@@ -7,6 +7,8 @@ FBScraper::Engine.routes.draw do
   end
 
   resources :searches, except: [:show]
+
+  resource :configuration, only: [:show, :update]
 
   match '*a', to: 'application#render_404', via: :get
 

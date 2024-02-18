@@ -1,0 +1,27 @@
+h2 Configuration
+
+= form_tag configuration_path, method: :patch do
+  .form-group
+    label Browser
+    div
+      = select_tag :browser, options_for_select(["Firefox", "Chrome"]), {selected: session[:fb_scraper_browser]}
+
+  .form-group
+    label Facebook Username
+    div
+      = text_field_tag :facebook_username, session[:fb_scraper_facebook_username], class: "form-control"
+
+  .form-group
+    label Facebook Password
+    div
+      = password_field_tag :facebook_password, session[:fb_scraper_facebook_password], class: "form-control"
+
+  .form-actions style="margin-top: 30px;"
+    = link_to "Cancel", searches_path, class: "btn btn-default"
+    button.btn.btn-primary.space-left3 type="submit" Save
+
+
+css:
+  .form-control{
+    max-width: 350px;
+  }

@@ -4,6 +4,11 @@
 .text-center{
   text-align: center !important;
 }
+.center-block{
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
 .inline{
   display: inline-block !important;
 }

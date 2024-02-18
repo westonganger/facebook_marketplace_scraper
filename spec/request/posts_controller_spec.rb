@@ -13,7 +13,7 @@ RSpec.describe FBScraper::PostsController, type: :request do
       {
         title: "some-title",
         location: "some-location",
-        url: "some-url",
+        url: "some-url-#{SecureRandom.hex(3)}",
         price: 1,
         search_item: @search_item,
       }.merge(attrs)
@@ -21,47 +21,16 @@ RSpec.describe FBScraper::PostsController, type: :request do
   end
 
   context "scrape" do
-    context "single search item" do
-      it "works" do
-        create_search_item
-
-        expect(FBScraper::Post.count).to eq(0)
-
-        allow(FBScraper::SearchItem).to receive(:scrape_multiple!).and_return(true)
-
-        post "/scrape", params: {search_item_ids: [@search_item.id]}
-        expect(response.status).to eq(302)
-        expect(response).to redirect_to("/")
-
-        pending "TODO"
-
-        expect(FBScraper::Post.count).to eq(1)
-      end
-    end
-
-    context "multiple search items" do
-      it "works" do
-        create_search_item
-        create_search_item
-
-        expect(FBScraper::Post.count).to eq(0)
-
-        allow(FBScraper::SearchItem).to receive(:scrape_multiple!).and_return(true)
-
-        post "/scrape", params: {search_item_ids: FBScraper::SearchItem.pluck(:id)}
-        expect(response.status).to eq(302)
-        expect(response).to redirect_to("/")
-
-        pending "TODO"
-
-        expect(FBScraper::Post.count).to eq(1)
-      end
+    it "redirects to config when credentials missing" do
+      post "/listings/scrape"
+      expect(response.status).to eq(302)
+      expect(response).to redirect_to("/configuration")
     end
   end
 
   context "index" do
     it "renders an empty list" do
-      get "/"
+      get "/listings"
       expect(response.status).to eq(200)
     end
 
@@ -76,11 +45,11 @@ RSpec.describe FBScraper::PostsController, type: :request do
       it "allows text" do
         create_post
 
-        get "/", params: {search: "foo"}
+        get "/listings", params: {search: "foo"}
         expect(response.status).to eq(200)
         expect(assigns(:posts)).to be_empty
 
-        get "/", params: {search: "some"}
+        get "/listings", params: {search: "some"}
         expect(response.status).to eq(200)
         expect(assigns(:posts)).not_to be_empty
       end
@@ -88,11 +57,11 @@ RSpec.describe FBScraper::PostsController, type: :request do
       it "allows min price" do
         create_post
 
-        get "/", params: {min_price: "5"}
+        get "/listings", params: {min_price: "5"}
         expect(response.status).to eq(200)
         expect(assigns(:posts)).to be_empty
 
-        get "/", params: {min_price: "1"}
+        get "/listings", params: {min_price: "1"}
         expect(response.status).to eq(200)
         expect(assigns(:posts)).not_to be_empty
       end
@@ -100,11 +69,11 @@ RSpec.describe FBScraper::PostsController, type: :request do
       it "allows max price" do
         create_post
 
-        get "/", params: {max_price: "0"}
+        get "/listings", params: {max_price: "0"}
         expect(response.status).to eq(200)
         expect(assigns(:posts)).to be_empty
 
-        get "/", params: {max_price: "1"}
+        get "/listings", params: {max_price: "1"}
         expect(response.status).to eq(200)
         expect(assigns(:posts)).not_to be_empty
       end
@@ -112,11 +81,11 @@ RSpec.describe FBScraper::PostsController, type: :request do
       it "allows search item selection" do
         create_post
 
-        get "/", params: {search_item_id: "foo"}
+        get "/listings", params: {search_item_id: "foo"}
         expect(response.status).to eq(200)
         expect(assigns(:posts)).to be_empty
 
-        get "/", params: {search_item_id: @search_item.id}
+        get "/listings", params: {search_item_id: @search_item.id}
         expect(response.status).to eq(200)
         expect(assigns(:posts)).not_to be_empty
       end
@@ -124,14 +93,14 @@ RSpec.describe FBScraper::PostsController, type: :request do
 
     context "saved" do
       it "renders an empty list" do
-        get "/", params: {saved: true}
+        get "/listings", params: {saved: true}
         expect(response.status).to eq(200)
       end
 
       it "renders a non-empty list" do
         create_post
 
-        get "/", params: {saved: true}
+        get "/listings", params: {saved: true}
         expect(response.status).to eq(200)
       end
     end
@@ -144,9 +113,9 @@ RSpec.describe FBScraper::PostsController, type: :request do
       expect(@post.read).to eq(false)
       expect(@post.saved).to eq(false)
 
-      patch "/#{@post.id}", params: {post: {read: true, saved: true}}
+      patch "/listings/#{@post.id}", params: {post: {read: true, saved: true}}
       expect(response.status).to eq(302)
-      expect(response).to redirect_to("/")
+      expect(response).to redirect_to("/listings")
 
       @post.reload
 
@@ -159,9 +128,9 @@ RSpec.describe FBScraper::PostsController, type: :request do
     it "destroys" do
       create_post
 
-      delete "/#{@post.id}"
+      delete "/listings/#{@post.id}"
       expect(response.status).to eq(302)
-      expect(response).to redirect_to("/")
+      expect(response).to redirect_to("/listings")
 
       expect(FBScraper::Post.find_by(id: @post.id)).to eq(nil)
     end
@@ -174,9 +143,9 @@ RSpec.describe FBScraper::PostsController, type: :request do
       create_post
       create_post
 
-      delete "/delete_all_unsaved"
+      delete "/listings/delete_all_unsaved"
       expect(response.status).to eq(302)
-      expect(response).to redirect_to("/")
+      expect(response).to redirect_to("/listings")
 
       expect(FBScraper::Post.all.size).to eq(2)
     end

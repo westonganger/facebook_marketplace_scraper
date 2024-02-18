@@ -18,7 +18,7 @@ module Dummy
     config.eager_load = true ### to catch more bugs in development/test environments
 
     if Rails.env.development?
-      config.log_level = :debug
+      config.log_level = (ENV["FB_SCRAPER_LOG_LEVEL"].presence || :debug)
     end
   end
 end
